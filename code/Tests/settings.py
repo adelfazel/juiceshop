@@ -2,6 +2,7 @@ import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
+
 @pytest.fixture()
 def browser():
     try:
@@ -10,7 +11,9 @@ def browser():
         driver.close()
         driver.quit()
     except Exception as e:
-        print(f"Unable to instanciate browser, most likely due to problem with error:{e}, ensure docker settings are OK!")
+        print(
+            f"Unable to instanciate browser, most likely due to problem with error:{e}, ensure docker settings are OK!")
+
 
 def get_chrome_options():
     """Sets chrome options for Selenium.
@@ -22,3 +25,15 @@ def get_chrome_options():
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.experimental_options["prefs"] = {}
     return chrome_options
+
+
+@pytest.fixture(scope="function", autouse=True)
+def test_failed_check(request):
+    yield
+    if request.node.rep_setup.failed:
+        print("setting up a test failed!", request.node.nodeid)
+    elif request.node.rep_setup.passed:
+        if request.node.rep_call.failed:
+            driver = request.node.funcargs['selenium_driver']
+            driver.take_screenshot(driver, request.node.nodeid)
+            print("executing test failed", request.node.nodeid)

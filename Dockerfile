@@ -7,11 +7,11 @@ RUN unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/
 RUN sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
 RUN apt-get -y update
 RUN apt-get install -y google-chrome-stable
-RUN mkdir -p /code/
-WORKDIR /code/
-COPY . /Tests
-COPY requirements.txt requirements.txt
+COPY /code /Tests
 WORKDIR /Tests
+RUN mkdir artefacts
+COPY requirements.txt requirements.txt
+
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 CMD ["pytest"]
