@@ -3,10 +3,20 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
 
+def create_browser():
+    driver = webdriver.Chrome(options=get_chrome_options())
+    driver.maximize_window()
+    driver.implicitly_wait(5)
+    driver.set_window_size(1920, 1080)
+    return driver
+
 @pytest.fixture()
 def browser():
     try:
         driver = webdriver.Chrome(options=get_chrome_options())
+        driver.maximize_window()
+        driver.implicitly_wait(3)
+        driver.set_window_size(1920, 1080)
         yield driver
         driver.close()
         driver.quit()
@@ -20,20 +30,10 @@ def get_chrome_options():
     Chrome options for headless browser is enabled.
     """
     chrome_options = Options()
+
     chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--window-size=1024,800")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.experimental_options["prefs"] = {}
     return chrome_options
-
-
-@pytest.fixture(scope="function", autouse=True)
-def test_failed_check(request):
-    yield
-    if request.node.rep_setup.failed:
-        print("setting up a test failed!", request.node.nodeid)
-    elif request.node.rep_setup.passed:
-        if request.node.rep_call.failed:
-            driver = request.node.funcargs['selenium_driver']
-            driver.take_screenshot(driver, request.node.nodeid)
-            print("executing test failed", request.node.nodeid)
