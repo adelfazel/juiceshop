@@ -1,6 +1,5 @@
 from . import Page
 import os
-from time import sleep
 
 
 class Complaint(Page.Page):
@@ -15,13 +14,18 @@ class Complaint(Page.Page):
         return self.driver.find_element_by_xpath(
             '//*[@id="complaintMessage"]')
 
+    def get_complaint_url(self):
+        return f"{self.get_url()}/#/complain"
+
     def go_to_complaint_page(self):
-        self.main_page().click()
-        self.side_menu_button_element().click()
-        self.get_compliant_sidebar_element().click()
+        self.driver.get(self.get_complaint_url())
 
     def fill_message(self, message="SSSDDWQWQE"):
         self.get_compliant_message_element().send_keys(message)
 
-    def upload_complaint_file(self, filename='invalidtype'):
-        self.driver.find_element_by_id('file').send_keys(f"{os.getcwd()}/files/{filename}")
+    def submit_complaint(self):
+        self.driver.find_element_by_id("submitButton").click()
+
+    def upload_complaint_file(self, filename='invalidtype.xml'):
+        fullpath = f"{os.getcwd()}/files/{filename}"
+        self.driver.find_element_by_id('file').send_keys(fullpath)

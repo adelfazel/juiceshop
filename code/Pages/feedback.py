@@ -40,9 +40,8 @@ class Feedback(Page.Page):
         self.driver.find_element_by_xpath('//*[@id="submitButton"]/span[1]').click()
 
     def feedback_change_author_id(self, authorid):
-        element = self.driver.find_element_by_xpath('//*[@id="userId"]')
+        element = self.driver.find_element_by_id('userId')
         self.driver.execute_script(f"arguments[0].value = {authorid}", element)
-        return self.driver.find_element_by_xpath('//*[@id="userId"]')
 
     def check_feedback_thankyou_is_present(self):
         try:

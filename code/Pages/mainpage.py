@@ -4,7 +4,6 @@ from . import Page
 from selenium.webdriver.common.action_chains import ActionChains
 from time import sleep
 
-
 class Mainpage(Page.Page):
     def get_url(self):
         return f"{super().get_url()}"
@@ -20,6 +19,13 @@ class Mainpage(Page.Page):
     def main_page(self):
         return self.driver.find_element_by_xpath(
             '/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-navbar/mat-toolbar/mat-toolbar-row/button[2]/span[1]/span')
+
+    def invalid_login_message_is_present(self):
+        try:
+            self.driver.find_element_by_xpath('/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-login/div/mat-card/div[1]')
+            return True
+        except:
+            return False
 
     def get_captcha_text(self):
         trial = 50
@@ -44,9 +50,6 @@ class Mainpage(Page.Page):
     def feedback_set_comment_text(self, text):
         self.driver.find_element_by_xpath('//*[@id="comment"][1]').send_keys(text)
 
-    def feedback_submit(self):
-        self.driver.find_element_by_xpath('//*[@id="submitButton"]/span[1]').click()
-
     def feedback_change_author_id(self, authorid):
         element = self.driver.find_element_by_xpath('//*[@id="userId"]')
         self.driver.execute_script(f"arguments[0].value = {authorid}", element)
@@ -60,7 +63,6 @@ class Mainpage(Page.Page):
             return False
 
     def fill_feedback_form(self):
-
         self.feedback_set_comment_text("really bad website")
         self.feedback_set_rating()
         captcha = self.get_captcha_text()

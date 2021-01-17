@@ -1,5 +1,4 @@
-import random
-import string
+from time import sleep
 
 class Page:
     def __init__(self, driver):
@@ -47,10 +46,8 @@ class Page:
             self.driver.save_screenshot(filename)
             return
 
-    def scroll_down(self):
-        pass
-
     def dismiss(self):
+        sleep(1)
         try:
             element = self.driver.find_element_by_xpath(
                 '//*[@id="mat-dialog-0"]/app-welcome-banner/div/div[2]/button[2]')
@@ -58,10 +55,21 @@ class Page:
         except:
             pass
 
-
-    def login(self, username='studentm_ele@yahoo.com', password='aassddaa'):
+    def go_to_login_page(self):
         self.driver.find_element_by_id('navbarAccount').click()
         self.driver.find_element_by_id('navbarLoginButton').click()
-        self.driver.find_element_by_id('email').send_keys(username)
-        self.driver.find_element_by_id('password').send_keys(password)
+
+    def get_login_page_username_element(self):
+        return self.driver.find_element_by_id('email')
+
+    def get_login_page_password_element(self):
+        return self.driver.find_element_by_id('password')
+
+    def click_on_login_page(self):
         self.driver.find_element_by_id('loginButton').click()
+
+    def login(self, username='studentm_ele@yahoo.com', password='aassddaa'):
+        self.go_to_login_page()
+        self.get_login_page_username_element().send_keys(username)
+        self.get_login_page_password_element().send_keys(password)
+        self.click_on_login_page()
